@@ -4,6 +4,7 @@ import 'package:movie_app/api/api.dart';
 import 'package:movie_app/api/api_service.dart';
 import 'package:movie_app/controllers/bottom_navigator_controller.dart';
 import 'package:movie_app/controllers/movies_controller.dart';
+import 'package:movie_app/controllers/people_controller.dart';
 import 'package:movie_app/controllers/search_controller.dart';
 import 'package:movie_app/widgets/search_box.dart';
 import 'package:movie_app/widgets/tab_builder.dart';
@@ -13,7 +14,9 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   final MoviesController controller = Get.put(MoviesController());
-  final SearchController1 searchController = Get.put(SearchController1());
+  final PeopleController peoplecontroller = Get.put(PeopleController());
+  final SearchControllerPerson searchController =
+      Get.put(SearchControllerPerson());
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -41,9 +44,9 @@ class HomeScreen extends StatelessWidget {
             SearchBox(
               onSumbit: () {
                 String search =
-                    Get.find<SearchController1>().searchController.text;
-                Get.find<SearchController1>().searchController.text = '';
-                Get.find<SearchController1>().search(search);
+                    Get.find<SearchControllerPerson>().searchController.text;
+                Get.find<SearchControllerPerson>().searchController.text = '';
+                Get.find<SearchControllerPerson>().search(search);
                 Get.find<BottomNavigatorController>().setIndex(1);
                 FocusManager.instance.primaryFocus?.unfocus();
               },
@@ -57,13 +60,14 @@ class HomeScreen extends StatelessWidget {
                   : SizedBox(
                       height: 300,
                       child: ListView.separated(
-                        itemCount: controller.mainTopRatedMovies.length,
+                        itemCount: peoplecontroller.mainTopRatedPeople.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         separatorBuilder: (_, __) => const SizedBox(width: 24),
-                        itemBuilder: (_, index) => TopRatedItem(
-                            movie: controller.mainTopRatedMovies[index],
-                            index: index + 1),
+                        itemBuilder: (_, index) => TopRatedPersonItem(
+                          person: peoplecontroller.mainTopRatedPeople[index],
+                          index: index + 1,
+                        ),
                       ),
                     )),
             ),
@@ -78,28 +82,13 @@ class HomeScreen extends StatelessWidget {
                         0xFF3A3F47,
                       ),
                       tabs: [
-                        Tab(text: 'Now playing'),
-                        Tab(text: 'Upcoming'),
-                        Tab(text: 'Top rated'),
-                        Tab(text: 'Popular'),
+                        Tab(text: 'More popular'),
                       ]),
                   SizedBox(
                     height: 400,
                     child: TabBarView(children: [
-                      TabBuilder(
-                        future: ApiService.getCustomMovies(
-                            'now_playing?api_key=${Api.apiKey}&language=en-US&page=1'),
-                      ),
-                      TabBuilder(
-                        future: ApiService.getCustomMovies(
-                            'upcoming?api_key=${Api.apiKey}&language=en-US&page=1'),
-                      ),
-                      TabBuilder(
-                        future: ApiService.getCustomMovies(
-                            'top_rated?api_key=${Api.apiKey}&language=en-US&page=1'),
-                      ),
-                      TabBuilder(
-                        future: ApiService.getCustomMovies(
+                      TabBuilderPeople(
+                        future: ApiService.getCustomPeople(
                             'popular?api_key=${Api.apiKey}&language=en-US&page=1'),
                       ),
                     ]),

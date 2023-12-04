@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:movie_app/api/api.dart';
 import 'package:movie_app/controllers/bottom_navigator_controller.dart';
 import 'package:movie_app/controllers/search_controller.dart';
-import 'package:movie_app/models/movie.dart';
-import 'package:movie_app/screens/details_screen.dart';
+import 'package:movie_app/models/person.dart';
+import 'package:movie_app/screens/person_details_screen.dart';
 import 'package:movie_app/widgets/infos.dart';
 import 'package:movie_app/widgets/search_box.dart';
 
@@ -46,7 +46,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 const Tooltip(
-                  message: 'Search your wanted movie here !',
+                  message: 'Search your wanted person here !',
                   triggerMode: TooltipTriggerMode.tap,
                   child: Icon(
                     Icons.info_outline,
@@ -61,9 +61,9 @@ class _SearchScreenState extends State<SearchScreen> {
             SearchBox(
               onSumbit: () {
                 String search =
-                    Get.find<SearchController1>().searchController.text;
-                Get.find<SearchController1>().searchController.text = '';
-                Get.find<SearchController1>().search(search);
+                    Get.find<SearchControllerPerson>().searchController.text;
+                Get.find<SearchControllerPerson>().searchController.text = '';
+                Get.find<SearchControllerPerson>().search(search);
                 FocusManager.instance.primaryFocus?.unfocus();
               },
             ),
@@ -71,9 +71,9 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 34,
             ),
             Obx(
-              (() => Get.find<SearchController1>().isLoading.value
+              (() => Get.find<SearchControllerPerson>().isLoading.value
                   ? const CircularProgressIndicator()
-                  : Get.find<SearchController1>().foundedMovies.isEmpty
+                  : Get.find<SearchControllerPerson>().foundedPeople.isEmpty
                       ? SizedBox(
                           width: Get.width / 1.5,
                           child: Column(
@@ -90,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 height: 10,
                               ),
                               const Text(
-                                'We Are Sorry, We Can Not Find The Movie :(',
+                                'We Are Sorry, We Can Not Find The Person :(',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 28,
@@ -116,25 +116,26 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         )
                       : ListView.separated(
-                          itemCount: Get.find<SearchController1>()
-                              .foundedMovies
+                          itemCount: Get.find<SearchControllerPerson>()
+                              .foundedPeople
                               .length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 24),
                           itemBuilder: (_, index) {
-                            Movie movie = Get.find<SearchController1>()
-                                .foundedMovies[index];
+                            Person person = Get.find<SearchControllerPerson>()
+                                .foundedPeople[index];
                             return GestureDetector(
-                              onTap: () => Get.to(DetailsScreen(movie: movie)),
+                              onTap: () =>
+                                  Get.to(PersonDetailsScreen(person: person)),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
                                     child: Image.network(
-                                      Api.imageBaseUrl + movie.posterPath,
+                                      Api.imageBaseUrl + person.profilePath,
                                       height: 180,
                                       width: 120,
                                       fit: BoxFit.cover,
@@ -156,7 +157,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   const SizedBox(
                                     width: 20,
                                   ),
-                                  Infos(movie: movie)
+                                  InfosPerson(person: person)
                                 ],
                               ),
                             );
