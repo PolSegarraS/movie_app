@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/api/api_service.dart';
-import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/models/person.dart';
 
 class SearchControllerPerson extends GetxController {
